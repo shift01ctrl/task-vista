@@ -1,148 +1,163 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, LogIn } from "lucide-react";
-
-const loginSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import AuthLayout from "@/components/layout/AuthLayout";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (data: LoginFormValues) => {
-    setIsLoading(true);
-    try {
-      // In a real app, this would be an API call to authenticate
-      console.log("Login data:", data);
-      
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // For demo purposes, we'll always succeed
-      localStorage.setItem("isAuthenticated", "true");
-      toast.success("Login successful!");
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please check your credentials.");
-    } finally {
-      setIsLoading(false);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
     }
+
+    // For demo, we'll just simulate a login
+    setIsLoading(true);
+    
+    // Simulate API request
+    setTimeout(() => {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("username", email.split("@")[0]);
+      localStorage.setItem("email", email);
+      
+      toast.success("Welcome back! 👋", {
+        description: "You have successfully logged in.",
+      });
+      
+      setIsLoading(false);
+      navigate("/");
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">TaskVista</h1>
-          <h2 className="mt-6 text-2xl font-bold">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-500">
-            Sign in to access your tasks
-          </p>
+    <AuthLayout>
+      <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
+          <div className="absolute inset-0 bg-primary overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80" 
+              alt="Productivity workspace" 
+              className="w-full h-full object-cover opacity-20"
+            />
+          </div>
+          <div className="relative z-20 flex items-center text-lg font-medium">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-2 h-6 w-6"
+            >
+              <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+            </svg>
+            TaskVista 📝
+          </div>
+          <div className="relative z-20 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-lg">
+                "TaskVista has transformed how our team manages projects, making collaboration 
+                seamless and task tracking intuitive."
+              </p>
+              <footer className="text-sm">Sofia Davis</footer>
+            </blockquote>
+          </div>
         </div>
+        <div className="lg:p-8">
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <div className="flex flex-col space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Welcome back 👋
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your email to sign in to your account
+              </p>
+            </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="you@example.com" 
-                      type="email" 
-                      {...field} 
-                      autoComplete="email"
+            <div className="grid gap-6">
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      placeholder="name@example.com"
+                      type="email"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      Forgot password?
-                    </Link>
                   </div>
-                  <FormControl>
-                    <Input 
-                      placeholder="••••••••" 
-                      type="password" 
-                      {...field} 
-                      autoComplete="current-password"
+                  <div className="grid gap-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      <Link
+                        to="/forgot-password"
+                        className="text-sm text-primary underline-offset-4 hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
-                <>
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Sign in
-                </>
-              )}
-            </Button>
-          </form>
-        </Form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Link to="/signup" className="font-medium text-primary hover:underline">
-              Sign up
-            </Link>
-          </p>
+                  </div>
+                  
+                  {error && (
+                    <div className="bg-destructive/10 text-destructive text-sm p-2 rounded-md">
+                      {error}
+                    </div>
+                  )}
+                  
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <div className="h-4 w-4 mr-2 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                        Signing In...
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </div>
+            
+            <div className="mx-auto text-center text-sm">
+              <span className="text-muted-foreground">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="text-primary underline-offset-4 hover:underline"
+                >
+                  Sign up
+                </Link>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 };
 

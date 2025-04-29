@@ -55,11 +55,11 @@ type TaskFormValues = z.infer<typeof taskSchema>;
 
 interface TaskDialogProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   editingTask?: Task | null;
 }
 
-const TaskDialog = ({ open, setOpen, editingTask }: TaskDialogProps) => {
+const TaskDialog = ({ open, onOpenChange, editingTask }: TaskDialogProps) => {
   const { addTask, updateTask } = useTaskContext();
   const isEditing = !!editingTask;
 
@@ -113,11 +113,11 @@ const TaskDialog = ({ open, setOpen, editingTask }: TaskDialogProps) => {
         status: data.status,
       });
     }
-    setOpen(false);
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[550px]">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -247,7 +247,7 @@ const TaskDialog = ({ open, setOpen, editingTask }: TaskDialogProps) => {
               />
             </div>
             <DialogFooter>
-              <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+              <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit">{isEditing ? "Save Changes" : "Create Task"}</Button>
@@ -260,3 +260,4 @@ const TaskDialog = ({ open, setOpen, editingTask }: TaskDialogProps) => {
 };
 
 export default TaskDialog;
+

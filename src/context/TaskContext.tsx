@@ -10,8 +10,8 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 const defaultTasks: Task[] = [
   {
     id: generateId(),
-    title: "Complete project proposal",
-    description: "Write and submit the project proposal for client review.",
+    title: "Compléter la proposition de projet",
+    description: "Rédiger et soumettre la proposition de projet pour l'examen du client.",
     dueDate: new Date(Date.now() + 86400000 * 2).toISOString(), // 2 days from now
     priority: "high",
     status: "in-progress",
@@ -19,8 +19,8 @@ const defaultTasks: Task[] = [
   },
   {
     id: generateId(),
-    title: "Weekly team meeting",
-    description: "Discuss progress and upcoming tasks with the development team.",
+    title: "Réunion d'équipe hebdomadaire",
+    description: "Discuter des progrès et des tâches à venir avec l'équipe de développement.",
     dueDate: new Date(Date.now() + 86400000 * 1).toISOString(), // 1 day from now
     priority: "medium",
     status: "todo",
@@ -28,8 +28,8 @@ const defaultTasks: Task[] = [
   },
   {
     id: generateId(),
-    title: "Update documentation",
-    description: "Update the user guide with new feature information.",
+    title: "Mettre à jour la documentation",
+    description: "Mettre à jour le guide d'utilisation avec les informations sur les nouvelles fonctionnalités.",
     dueDate: new Date(Date.now() + 86400000 * 5).toISOString(), // 5 days from now
     priority: "low",
     status: "todo",
@@ -37,8 +37,8 @@ const defaultTasks: Task[] = [
   },
   {
     id: generateId(),
-    title: "Fix login page bug",
-    description: "Address the authentication issue on the login page.",
+    title: "Corriger le bug de la page de connexion",
+    description: "Résoudre le problème d'authentification sur la page de connexion.",
     dueDate: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 day ago (overdue)
     priority: "high",
     status: "todo",
@@ -46,8 +46,8 @@ const defaultTasks: Task[] = [
   },
   {
     id: generateId(),
-    title: "Client presentation",
-    description: "Prepare slides and demo for the client presentation.",
+    title: "Présentation client",
+    description: "Préparer les diapositives et la démo pour la présentation client.",
     dueDate: new Date(Date.now() + 86400000 * 3).toISOString(), // 3 days from now
     priority: "high",
     status: "todo",
@@ -96,8 +96,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     };
     setTasks((prevTasks) => [...prevTasks, newTask]);
     toast({
-      title: "Task added",
-      description: `"${task.title}" has been added to your tasks.`,
+      title: "Tâche ajoutée",
+      description: `"${task.title}" a été ajoutée à vos tâches.`,
     });
   };
 
@@ -108,8 +108,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
       )
     );
     toast({
-      title: "Task updated",
-      description: "Your task has been updated successfully.",
+      title: "Tâche mise à jour",
+      description: "Votre tâche a été mise à jour avec succès.",
     });
   };
 
@@ -120,8 +120,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     
     if (taskToDelete) {
       toast({
-        title: "Task deleted",
-        description: `"${taskToDelete.title}" has been removed.`,
+        title: "Tâche supprimée",
+        description: `"${taskToDelete.title}" a été supprimée.`,
         variant: "destructive",
       });
     }

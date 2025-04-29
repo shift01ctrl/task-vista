@@ -1,5 +1,6 @@
 
 import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Calendar, Edit, Trash } from "lucide-react";
 import { Task } from "@/types/task";
 import { cn } from "@/lib/utils";
@@ -46,9 +47,35 @@ const getStatusColor = (status: Task["status"]) => {
   }
 };
 
+const getPriorityLabel = (priority: Task["priority"]) => {
+  switch (priority) {
+    case "high":
+      return "Élevée";
+    case "medium":
+      return "Moyenne";
+    case "low":
+      return "Faible";
+    default:
+      return "Inconnue";
+  }
+};
+
+const getStatusLabel = (status: Task["status"]) => {
+  switch (status) {
+    case "todo":
+      return "À Faire";
+    case "in-progress":
+      return "En Cours";
+    case "done":
+      return "Terminé";
+    default:
+      return "Inconnu";
+  }
+};
+
 const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
   const { title, description, dueDate, priority, status } = task;
-  const formattedDate = format(new Date(dueDate), "MMM d, yyyy");
+  const formattedDate = format(new Date(dueDate), "d MMM yyyy", { locale: fr });
   const isOverdue = new Date(dueDate) < new Date() && status !== "done";
 
   return (
@@ -60,24 +87,20 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
       </CardHeader>
       <CardContent className="flex-grow">
         <CardDescription className="line-clamp-2 mb-4">
-          {description || "No description provided"}
+          {description || "Aucune description fournie"}
         </CardDescription>
         <div className="flex flex-wrap gap-2 mb-2">
           <Badge variant="outline" className={cn(getPriorityColor(priority))}>
-            {priority.charAt(0).toUpperCase() + priority.slice(1)}
+            {getPriorityLabel(priority)}
           </Badge>
           <Badge variant="outline" className={cn(getStatusColor(status))}>
-            {status === "todo" 
-              ? "To Do" 
-              : status === "in-progress" 
-              ? "In Progress" 
-              : "Done"}
+            {getStatusLabel(status)}
           </Badge>
         </div>
         <div className="flex items-center text-sm text-muted-foreground mt-2">
           <Calendar className="h-4 w-4 mr-1" />
           <span className={cn(isOverdue && "text-red-500 font-medium")}>
-            {isOverdue ? "Overdue: " : "Due: "}
+            {isOverdue ? "En retard: " : "Échéance: "}
             {formattedDate}
           </span>
         </div>
@@ -90,7 +113,7 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
             className="text-muted-foreground"
             onClick={() => onEdit(task)}
           >
-            <Edit className="h-4 w-4 mr-1" /> Edit
+            <Edit className="h-4 w-4 mr-1" /> Modifier
           </Button>
           <Button
             variant="outline"
@@ -98,7 +121,7 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
             className="text-red-500"
             onClick={() => onDelete(task.id)}
           >
-            <Trash className="h-4 w-4 mr-1" /> Delete
+            <Trash className="h-4 w-4 mr-1" /> Supprimer
           </Button>
         </div>
       </CardFooter>
